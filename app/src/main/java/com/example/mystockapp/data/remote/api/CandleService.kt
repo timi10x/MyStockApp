@@ -1,4 +1,4 @@
-package com.example.mystockapp.data.api
+package com.example.mystockapp.data.remote.api
 
 import com.example.mystockapp.domain.model.Candle
 import retrofit2.Response
