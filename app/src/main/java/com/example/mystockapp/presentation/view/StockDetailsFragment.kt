@@ -2,6 +2,9 @@ package com.example.mystockapp.presentation.view
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -16,6 +19,7 @@ import com.example.mystockapp.presentation.utils.viewBinding
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.squareup.picasso.Picasso
 import java.lang.Math.abs
 
 class StockDetailsFragment : Fragment(R.layout.fragment_stock_details) {
@@ -24,7 +28,6 @@ class StockDetailsFragment : Fragment(R.layout.fragment_stock_details) {
     private val args: StockDetailsFragmentArgs by navArgs()
 
     private lateinit var stockDetailsViewModel: StockDetailsViewModel
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,6 +44,7 @@ class StockDetailsFragment : Fragment(R.layout.fragment_stock_details) {
 
 
         binding.apply {
+
             detailCurrentPriceTv.text = "$%.2f".format(stockItem.latestPrice)
 
             //calculate day delta and percent rise
@@ -49,10 +53,16 @@ class StockDetailsFragment : Fragment(R.layout.fragment_stock_details) {
             if (stockDelta < 0) {
                 detailDayDeltaTv.setTextColor(Color.RED)
                 detailDayDeltaTv.text = "-$%.2f (%.2f".format(-stockDelta, stockRisePercent) + "%)"
+                detailDayDeltaTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.round_trending_down_20, 0, 0, 0)
             } else {
                 detailDayDeltaTv.text = "+$%.2f (%.2f".format(stockDelta, stockRisePercent) + "%)"
                 detailDayDeltaTv.setTextColor(Color.GREEN)
+                detailDayDeltaTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.round_trending_up_20, 0, 0, 0)
             }
+
+            Picasso.get()
+                .load(stockItem.logo)
+                .into(StockImageView)
         }
         stockDetailsViewModel.candle.observe(viewLifecycleOwner) { candle ->
             val entries = arrayListOf<Entry>()
@@ -65,8 +75,8 @@ class StockDetailsFragment : Fragment(R.layout.fragment_stock_details) {
             val dataSet = LineDataSet(entries, stockItem.ticker)
             dataSet.setDrawCircles(false)
             dataSet.setDrawValues(false)
-            dataSet.color = Color.BLACK
-            dataSet.lineWidth = 3f
+            dataSet.color = R.color.blue
+            dataSet.lineWidth = 1f
 
             dataSet.setDrawFilled(true)
             dataSet.fillDrawable =

@@ -23,7 +23,7 @@ import com.example.mystockapp.presentation.model.SharedViewModel
 import com.example.mystockapp.presentation.model.StocksViewModel
 import com.example.mystockapp.presentation.utils.viewBinding
 
-class HomeFragment : Fragment(), SearchAdapter.OnItemClickListener, StocksAdapter.OnItemClickListener  {
+class HomeFragment : Fragment(R.layout.fragment_home), SearchAdapter.OnItemClickListener, StocksAdapter.OnItemClickListener  {
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private lateinit var searchAdapter: SearchAdapter
@@ -100,6 +100,8 @@ class HomeFragment : Fragment(), SearchAdapter.OnItemClickListener, StocksAdapte
 
                 binding.searchRv.visibility =
                     View.VISIBLE
+
+                binding.stocksRv.visibility = View.GONE
 
                 mSearchView.requestFocus()
 

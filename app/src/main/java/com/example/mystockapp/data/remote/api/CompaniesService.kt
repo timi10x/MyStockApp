@@ -7,5 +7,5 @@ import retrofit2.http.GET
 
 interface CompaniesService {
     @GET("timmyCoder/listing/main/listing.json")
-    suspend fun getCompanies(): Observable<List<CompanyProfile>>
+    fun getCompanies(): Observable<List<CompanyProfile>>
 }

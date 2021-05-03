@@ -8,5 +8,5 @@ import retrofit2.http.Path
 
 interface QuoteService {
     @GET("stock/{symbol}/quote")
-    suspend fun getQuote(@Path("symbol") ticker: String): Observable<Quote>
+    fun getQuote(@Path("symbol") ticker: String): Observable<Quote>
 }
