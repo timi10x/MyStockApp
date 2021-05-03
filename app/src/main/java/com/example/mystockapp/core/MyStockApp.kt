@@ -1,7 +1,10 @@
 package com.example.mystockapp.core
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import com.example.mystockapp.data.local.StockDatabase
+import com.example.mystockapp.data.repository.CompanyRepository
 
-@HiltAndroidApp
-class MyStockApp : Application()
+class MyStockApp : Application() {
+    private val database by lazy { StockDatabase.getDatabase(this) }
+    val repository by lazy { CompanyRepository(database.companyDao()) }
+}

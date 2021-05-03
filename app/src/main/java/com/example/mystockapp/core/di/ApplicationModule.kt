@@ -1,50 +1,25 @@
 package com.example.mystockapp.core.di
 
-import android.content.Context
-import androidx.room.Room
+
 import com.example.mystockapp.BuildConfig
-import com.example.mystockapp.data.local.StockDatabase
 import com.example.mystockapp.data.remote.api.CandleService
 import com.example.mystockapp.data.remote.api.CompaniesService
 import com.example.mystockapp.data.remote.api.QuoteService
-import com.example.mystockapp.domain.model.Quote
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import javax.inject.Singleton
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
-@Module
-@InstallIn(SingletonComponent::class)
 object NetworkModule {
+    var candleApiClient: NetworkModule? = null
 
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-                .baseUrl(BuildConfig.BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
+    fun getClient(): NetworkModule? {
+        if (candleApiClient == null) {
+            candleApiClient = NetworkModule
+        }
+        return candleApiClient
     }
-
-    @Provides
-    @Singleton
-    fun provideRetrofitCompanies(): Retrofit{
-        return Retrofit.Builder()
-                .baseUrl(BuildConfig.Github_URL)
-                .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
-    }
-
-
     private val requestInterceptor = Interceptor { chain ->
         val url = chain.request()
                 .url
@@ -62,6 +37,17 @@ object NetworkModule {
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(requestInterceptor)
             .build()
+
+    val retrofitCandleInstance: CandleService
+        get() {
+            val retrofit = Retrofit.Builder()
+                    .client(okHttpClient)
+                    .baseUrl(BuildConfig.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build()
+            return retrofit.create(CandleService::class.java)
+        }
 
     private val requestClientInterceptor = Interceptor { chain ->
         val url = chain.request()
@@ -81,50 +67,26 @@ object NetworkModule {
             .addInterceptor(requestClientInterceptor)
             .build()
 
-    @Provides
-    @Singleton
-    fun provideRetrofitQuotes(): Retrofit{
-        return Retrofit.Builder()
-                .baseUrl(BuildConfig.IEX_URL)
-                .client(okHttpQuoteClient)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
-    }
 
+    val retrofitQuoteInstance: QuoteService
+        get() {
+            val retrofit = Retrofit.Builder()
+                    .client(okHttpQuoteClient)
+                    .baseUrl(BuildConfig.IEX_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build()
+            return retrofit.create(QuoteService::class.java)
+        }
 
-    @Singleton
-    @Provides
-    fun providesCandleService(retrofit: Retrofit): CandleService {
-        return retrofit.create(CandleService::class.java)
-    }
+    val retrofitCompaniesInstance: CompaniesService
+        get() {
+            val retrofit = Retrofit.Builder()
+                    .baseUrl(BuildConfig.Github_URL)
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+            return retrofit.create(CompaniesService::class.java)
+        }
 
-    @Singleton
-    @Provides
-    fun providesCompaniesService(retrofit: Retrofit): CompaniesService {
-        return retrofit.create(CompaniesService::class.java)
-    }
-
-    @Singleton
-    @Provides
-    fun providesQuoteServices(retrofit: Retrofit): QuoteService {
-        return retrofit.create(QuoteService::class.java)
-    }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-    @Singleton
-    @Provides
-    fun providesDataBase(@ApplicationContext context: Context): StockDatabase {
-        return Room.databaseBuilder(
-                context.applicationContext,
-                StockDatabase::class.java,
-                StockDatabase.DB_NAME
-        ).fallbackToDestructiveMigration().build()
-    }
-
-    @Singleton
-    @Provides
-    fun providesCompanyDao(db: StockDatabase) = db.companyDao()
 }
