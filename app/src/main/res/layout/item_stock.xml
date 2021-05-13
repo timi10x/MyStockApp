@@ -60,7 +60,7 @@
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/company_name_tv"
             app:layout_constraintEnd_toStartOf="@+id/day_delta_tv"
-            app:layout_constraintTop_toTopOf="@+id/ticker_tv"
+            app:layout_constraintTop_toTopOf="@+id/company_name_tv"
             tools:text="$ 6.17" />
 
         <TextView
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/circularstdmedium"
-            android:maxLines="2"
+            android:maxLines="1"
             android:textColor="@color/grey"
             android:textSize="14sp"
             app:layout_constrainedWidth="true"

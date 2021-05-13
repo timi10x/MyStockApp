@@ -60,9 +60,15 @@ class StockDetailsFragment : Fragment(R.layout.fragment_stock_details) {
                 detailDayDeltaTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.round_trending_up_20, 0, 0, 0)
             }
 
-            Picasso.get()
-                .load(stockItem.logo)
-                .into(StockImageView)
+            if (stockItem.logo.isEmpty()) {
+                StockImageView.setImageResource(R.drawable.stock)
+            } else{
+                Picasso.get()
+                    .load(stockItem.logo)
+                    .into(StockImageView)
+            }
+
+
         }
         stockDetailsViewModel.candle.observe(viewLifecycleOwner) { candle ->
             val entries = arrayListOf<Entry>()
