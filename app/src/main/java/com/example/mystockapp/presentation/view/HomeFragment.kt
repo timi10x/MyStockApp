@@ -12,7 +12,7 @@ import android.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.android.stockshow.ui.adapters.StocksAdapter
+import com.example.mystockapp.presentation.adapter.StocksAdapter
 import com.example.mystockapp.R
 import com.example.mystockapp.core.MyStockApp
 import com.example.mystockapp.databinding.FragmentHomeBinding

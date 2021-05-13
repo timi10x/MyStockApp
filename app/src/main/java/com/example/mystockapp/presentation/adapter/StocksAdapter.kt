@@ -1,4 +1,4 @@
-package com.example.android.stockshow.ui.adapters
+package com.example.mystockapp.presentation.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
